@@ -1,0 +1,247 @@
+{
+  "intents": [
+    {
+      "intent": "pedido",
+      "examples": [
+        {
+          "text": "Anota o meu pedido"
+        },
+        {
+          "text": "manda comida aqui"
+        },
+        {
+          "text": "Posso fazer o meu pedido"
+        },
+        {
+          "text": "Posso fazer um pedido?"
+        },
+        {
+          "text": "Quero comida japonesa"
+        },
+        {
+          "text": "quero fazer um pedido"
+        },
+        {
+          "text": "Quero pedir um temaki"
+        },
+        {
+          "text": "Quero temake"
+        },
+        {
+          "text": "To com fome"
+        },
+        {
+          "text": "vontade de comer peixe"
+        }
+      ],
+      "description": "informações sobre o pedido"
+    }
+  ],
+  "entities": [
+    {
+      "entity": "cardapio",
+      "values": [
+        {
+          "type": "synonyms",
+          "value": "hot roll",
+          "synonyms": []
+        },
+        {
+          "type": "synonyms",
+          "value": "sashimi",
+          "synonyms": []
+        },
+        {
+          "type": "synonyms",
+          "value": "sushi",
+          "synonyms": []
+        },
+        {
+          "type": "synonyms",
+          "value": "temaki",
+          "synonyms": []
+        }
+      ],
+      "fuzzy_match": true
+    },
+    {
+      "entity": "cep",
+      "values": [
+        {
+          "type": "patterns",
+          "value": "cep",
+          "patterns": [
+            "(\\d{5}-\\d{3})"
+          ]
+        }
+      ],
+      "fuzzy_match": true
+    }
+  ],
+  "metadata": {
+    "api_version": {
+      "major_version": "v2",
+      "minor_version": "2018-11-08"
+    }
+  },
+  "dialog_nodes": [
+    {
+      "type": "standard",
+      "title": "Bem-vindo",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Olá. Como posso te ajudar?"
+              },
+              {
+                "text": "Que bom que vc esta aqui! como te ajudamos hoje ?"
+              },
+              {
+                "text": "Estamos feliz pelo seu contato! o que você precisa ?"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "conditions": "welcome",
+      "dialog_node": "Bem-vindo"
+    },
+    {
+      "type": "standard",
+      "title": "Em outros casos",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Eu não entendi. Você pode tentar reformular a frase."
+              },
+              {
+                "text": "Você pode reformular sua afirmação? Eu não estou entendendo."
+              },
+              {
+                "text": "Eu não entendi o sentido."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "conditions": "anything_else",
+      "dialog_node": "Em outros casos",
+      "previous_sibling": "node_6_1604866347093",
+      "disambiguation_opt_out": true
+    },
+    {
+      "type": "event_handler",
+      "output": {},
+      "parent": "slot_6_1604866582557",
+      "context": {
+        "cep": "@cep"
+      },
+      "conditions": "@cep",
+      "event_name": "input",
+      "dialog_node": "handler_10_1604866582559"
+    },
+    {
+      "type": "event_handler",
+      "output": {},
+      "parent": "slot_3_1604866486252",
+      "context": {
+        "cardapio": "@cardapio"
+      },
+      "conditions": "@cardapio",
+      "event_name": "input",
+      "dialog_node": "handler_1_1604866486262"
+    },
+    {
+      "type": "event_handler",
+      "output": {
+        "text": {
+          "values": [
+            "Qual é o seu pedido?"
+          ],
+          "selection_policy": "sequential"
+        }
+      },
+      "parent": "slot_3_1604866486252",
+      "event_name": "focus",
+      "dialog_node": "handler_9_1604866486262",
+      "previous_sibling": "handler_1_1604866486262"
+    },
+    {
+      "type": "event_handler",
+      "output": {
+        "text": {
+          "values": [
+            "Qual é o CEP da entrega?"
+          ],
+          "selection_policy": "sequential"
+        }
+      },
+      "parent": "slot_6_1604866582557",
+      "event_name": "focus",
+      "dialog_node": "handler_9_1604866582559",
+      "previous_sibling": "handler_10_1604866582559"
+    },
+    {
+      "type": "frame",
+      "title": "Pedido",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Anotado o seu pedido! Resumo: Um $cardapio para o CEP <? @cep.literal ?>."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "conditions": "#pedido",
+      "dialog_node": "node_6_1604866347093",
+      "previous_sibling": "Bem-vindo"
+    },
+    {
+      "type": "slot",
+      "parent": "node_6_1604866347093",
+      "variable": "$cardapio",
+      "dialog_node": "slot_3_1604866486252"
+    },
+    {
+      "type": "slot",
+      "parent": "node_6_1604866347093",
+      "variable": "$cep",
+      "dialog_node": "slot_6_1604866582557",
+      "previous_sibling": "slot_3_1604866486252"
+    }
+  ],
+  "counterexamples": [],
+  "system_settings": {
+    "disambiguation": {
+      "prompt": "Você quis dizer:",
+      "enabled": true,
+      "randomize": true,
+      "max_suggestions": 5,
+      "suggestion_text_policy": "title",
+      "none_of_the_above_prompt": "Nenhuma das anteriores"
+    },
+    "system_entities": {
+      "enabled": true
+    },
+    "human_agent_assist": {
+      "prompt": "Você quis dizer:"
+    }
+  },
+  "learning_opt_out": false,
+  "name": "Atendimento Temakeria",
+  "language": "pt-br",
+  "description": "Exercício de criar chat bot"
+}
